@@ -1,5 +1,5 @@
-let scene, camera, renderer, model, controls, loadedClothingModel;
-const modelPath = 'rbb.glb'; // Ensure this path is correct
+let scene, camera, renderer, model, controls, loadedClothingModel, raycaster, mouse;
+const modelPath = '/model/rbb.glb'; // Ensure this path is correct
 
 function init() {
     console.log("Initializing the scene...");
@@ -47,7 +47,16 @@ function init() {
 
     // Controls setup
     controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.25;
+    controls.screenSpacePanning = false;
+    controls.minDistance = 1;
+    controls.maxDistance = 500;
     controls.update();
+
+    // Initialize raycaster and mouse vector
+    raycaster = new THREE.Raycaster();
+    mouse = new THREE.Vector2();
 
     // Event listeners for controls
     document.getElementById('height').addEventListener('input', updateModel);
@@ -59,12 +68,36 @@ function init() {
 
     // Handle window resize
     window.addEventListener('resize', onWindowResize, false);
+
+    // Mouse move and wheel event listeners
+    window.addEventListener('mousemove', onMouseMove, false);
+    window.addEventListener('wheel', onMouseWheel, false);
 }
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function onMouseMove(event) {
+    // Update mouse position
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+}
+
+function onMouseWheel(event) {
+    // Update the raycaster with the mouse position
+    raycaster.setFromCamera(mouse, camera);
+
+    // Calculate objects intersecting the raycaster
+    const intersects = raycaster.intersectObjects(scene.children, true);
+
+    if (intersects.length > 0) {
+        const intersect = intersects[0];
+        controls.target.copy(intersect.point);
+        controls.update();
+    }
 }
 
 function updateModel() {
