@@ -1,5 +1,5 @@
 let scene, camera, renderer, model, controls, loadedClothingModel;
-const modelPath = 'rbb.glb'; // Ensure this path is correct
+const modelPath = '/model/rbb.glb'; // Ensure this path is correct
 
 function init() {
     console.log("Initializing the scene...");
@@ -9,7 +9,7 @@ function init() {
 
     // Camera setup
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(2, 7, 9); // Adjusted initial camera position for better view
+    camera.position.set(2, 1.6, 20); // Adjusted initial camera position for better view
 
     // Renderer setup
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -18,7 +18,7 @@ function init() {
     document.getElementById('model-container').appendChild(renderer.domElement);
 
     // Light setup
-    const ambientLight = new THREE.AmbientLight(0x404000, 2); // Soft white light
+    const ambientLight = new THREE.AmbientLight(0xf0f000, 2); // Soft white light
     scene.add(ambientLight);
 
     const directionalLight1 = new THREE.DirectionalLight(0xffffff, 1);
@@ -52,6 +52,7 @@ function init() {
     // Event listeners for controls
     document.getElementById('height').addEventListener('input', updateModel);
     document.getElementById('fitness').addEventListener('input', updateModel);
+    document.getElementById('color').addEventListener('input', updateColor); // New event listener for color
 
     // File input event listener
     document.getElementById('file-input').addEventListener('change', handleFileUpload);
@@ -96,6 +97,19 @@ function updateModel() {
             // Update clothing position based on controls
             updateClothingPosition();
         }
+    }
+}
+
+function updateColor() {
+    const colorValue = document.getElementById('color').value;
+
+    if (model) {
+        model.traverse((child) => {
+            if (child.isMesh) {
+                child.material.color.set(colorValue);
+            }
+        });
+        console.log(`Model color updated: color=${colorValue}`);
     }
 }
 
@@ -151,8 +165,8 @@ function handleFileUpload(event) {
                 console.log('Clothing model loaded successfully');
 
                 // Disable height and fitness controls, show clothing controls
-                // document.getElementById('height').disabled = true;
-                // document.getElementById('fitness').disabled = true;
+                document.getElementById('height').disabled = true;
+                document.getElementById('fitness').disabled = true;
                 document.querySelector('.clothing-controls').style.display = 'block';
 
                 // Set up event listener for clothing controls
@@ -160,6 +174,8 @@ function handleFileUpload(event) {
                 document.getElementById('clothing-x').addEventListener('input', updateClothingPosition);
                 document.getElementById('clothing-y').addEventListener('input', updateClothingPosition);
                 document.getElementById('clothing-z').addEventListener('input', updateClothingPosition);
+                document.getElementById('clothing-rotate-x').addEventListener('input', updateClothingRotation);
+                document.getElementById('clothing-rotate-y').addEventListener('input', updateClothingRotation);
             }, undefined, (error) => {
                 console.error('An error occurred while loading the clothing model:', error);
             });
@@ -185,6 +201,16 @@ function updateClothingPosition() {
     if (loadedClothingModel) {
         loadedClothingModel.position.set(xValue, yValue, zValue);
         console.log(`Clothing model position updated: x=${xValue}, y=${yValue}, z=${zValue}`);
+    }
+}
+
+function updateClothingRotation() {
+    const rotateX = parseFloat(document.getElementById('clothing-rotate-x').value) * Math.PI / 180;
+    const rotateY = parseFloat(document.getElementById('clothing-rotate-y').value) * Math.PI / 180;
+
+    if (loadedClothingModel) {
+        loadedClothingModel.rotation.set(rotateX, rotateY, 0);
+        console.log(`Clothing model rotation updated: rotateX=${rotateX}, rotateY=${rotateY}`);
     }
 }
 
