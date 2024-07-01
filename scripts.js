@@ -1,4 +1,4 @@
-let scene, camera, renderer, model, controls, loadedClothingModel, raycaster, mouse;
+let scene, camera, renderer, model, controls, loadedClothingModel;
 const modelPath = '/model/rbb.glb'; // Ensure this path is correct
 
 function init() {
@@ -18,7 +18,7 @@ function init() {
     document.getElementById('model-container').appendChild(renderer.domElement);
 
     // Light setup
-    const ambientLight = new THREE.AmbientLight(0xf0f000, 2); // Soft white light
+    const ambientLight = new THREE.AmbientLight(0xf0f0d0d0, 2); // Soft white light
     scene.add(ambientLight);
 
     const directionalLight1 = new THREE.DirectionalLight(0xffffff, 1);
@@ -47,16 +47,7 @@ function init() {
 
     // Controls setup
     controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.25;
-    controls.screenSpacePanning = false;
-    controls.minDistance = 1;
-    controls.maxDistance = 500;
     controls.update();
-
-    // Initialize raycaster and mouse vector
-    raycaster = new THREE.Raycaster();
-    mouse = new THREE.Vector2();
 
     // Event listeners for controls
     document.getElementById('height').addEventListener('input', updateModel);
@@ -69,35 +60,14 @@ function init() {
     // Handle window resize
     window.addEventListener('resize', onWindowResize, false);
 
-    // Mouse move and wheel event listeners
-    window.addEventListener('mousemove', onMouseMove, false);
-    window.addEventListener('wheel', onMouseWheel, false);
+    // Update controls for zooming to cursor position
+    updateControlsForZoom();
 }
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-}
-
-function onMouseMove(event) {
-    // Update mouse position
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-}
-
-function onMouseWheel(event) {
-    // Update the raycaster with the mouse position
-    raycaster.setFromCamera(mouse, camera);
-
-    // Calculate objects intersecting the raycaster
-    const intersects = raycaster.intersectObjects(scene.children, true);
-
-    if (intersects.length > 0) {
-        const intersect = intersects[0];
-        controls.target.copy(intersect.point);
-        controls.update();
-    }
 }
 
 function updateModel() {
@@ -209,6 +179,9 @@ function handleFileUpload(event) {
                 document.getElementById('clothing-z').addEventListener('input', updateClothingPosition);
                 document.getElementById('clothing-rotate-x').addEventListener('input', updateClothingRotation);
                 document.getElementById('clothing-rotate-y').addEventListener('input', updateClothingRotation);
+
+                // Ensure zoom feature works after uploading the file
+                updateControlsForZoom();
             }, undefined, (error) => {
                 console.error('An error occurred while loading the clothing model:', error);
             });
@@ -265,6 +238,39 @@ function alignClothing(clothingModel) {
     }
 
     // Add more conditions as needed for different clothing types
+}
+
+function updateControlsForZoom() {
+    let mouse = new THREE.Vector2();
+
+    function onMouseMove(event) {
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    }
+
+    function onMouseWheel(event) {
+        let raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera(mouse, camera);
+
+        let intersects = raycaster.intersectObjects(scene.children, true);
+
+        if (intersects.length > 0) {
+            let intersect = intersects[0];
+            let target = intersect.point;
+
+            let distance = camera.position.distanceTo(target);
+            let zoomFactor = distance / 10;
+
+            camera.position.lerp(target, 0.1);
+            camera.updateProjectionMatrix();
+
+            controls.target.copy(target);
+            controls.update();
+        }
+    }
+
+    document.addEventListener('mousemove', onMouseMove, false);
+    document.addEventListener('wheel', onMouseWheel, false);
 }
 
 function animate() {
