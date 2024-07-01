@@ -1,5 +1,5 @@
 let scene, camera, renderer, model, controls, loadedClothingModel;
-const modelPath = '/model/rbb.glb'; // Ensure this path is correct
+const modelPath = 'rbb.glb'; // Ensure this path is correct
 
 function init() {
     console.log("Initializing the scene...");
