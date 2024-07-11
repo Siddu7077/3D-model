@@ -37,4 +37,18 @@ We welcome contributions to enhance this project! Feel free to submit pull reque
 
 ## Contact :
 For questions or feedback, please reach out to us at siddeshwarreddy616@gmail.com
+<br><br>
 <br>
+<img width="1440" alt="Screenshot 2024-07-11 at 11 09 06 PM" src="https://github.com/Siddu7077/3D-model/assets/150268438/51a25e98-c637-4521-bea4-e56d3dd79115">
+
+<br><br><br>
+
+<img width="1440" alt="Screenshot 2024-07-11 at 11 08 46 PM" src="https://github.com/Siddu7077/3D-model/assets/150268438/f39a6ef5-df6d-4e1a-9a76-742041f0fc8f">
+<br><br><br>
+
+<img width="1440" alt="Screenshot 2024-07-11 at 11 11 38 PM" src="https://github.com/Siddu7077/3D-model/assets/150268438/7009cbb8-688a-4130-ba8b-b5b1bb397bdd">
+<br><br><br>
+
+
+<img width="1440" alt="Screenshot 2024-07-11 at 11 11 45 PM" src="https://github.com/Siddu7077/3D-model/assets/150268438/c0dcc746-4e21-4e86-8151-75f9e6d7cf3e">
+<br><br><br>
