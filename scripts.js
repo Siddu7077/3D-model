@@ -26,7 +26,7 @@ function init() {
     scene.add(directionalLight1);
 
     const directionalLight2 = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight2.position.set(-10, -10, -10).normalize();
+    directionalLight2.position.set(-10, -10, -10).normalize( );
     scene.add(directionalLight2);
 
     // Load model
