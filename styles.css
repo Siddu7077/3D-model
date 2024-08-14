@@ -1,4 +1,5 @@
-body {
+body 
+{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -8,11 +9,13 @@ body {
     padding: 0;
 }
 
-.controls {
+.controls 
+{
     margin-bottom: 20px;
 }
 
-#model-container {
+#model-container 
+{
     width: 100%;
     height: 60%;
 }
